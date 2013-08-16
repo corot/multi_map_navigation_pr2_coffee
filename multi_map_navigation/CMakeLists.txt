@@ -1,19 +1,19 @@
-cmake_minimum_required(VERSION 2.4.6)
-include($ENV{ROS_ROOT}/core/rosbuild/rosbuild.cmake)
+cmake_minimum_required(VERSION 2.8.3)
+project(multi_map_navigation)
 
-#for building our actions. This MUST come before rosbuild_init
-rosbuild_find_ros_package(actionlib_msgs)
-include(${actionlib_msgs_PACKAGE_PATH}/cmake/actionbuild.cmake)
-genaction()
+# Load catkin and all dependencies required for this package
+find_package(catkin REQUIRED COMPONENTS rospy message_generation std_msgs actionlib_msgs)
 
-rosbuild_init()
+add_service_files(DIRECTORY srv
+                      FILES SetMap.srv
+                 )
 
-#set the default path for built executables to the "bin" directory
-set(EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/bin)
-#set the default path for built libraries to the "lib" directory
-set(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/lib)
+add_action_files(DIRECTORY action
+                     FILES MultiMapNavigation.action
+                           MultiMapNavigationTransition.action
+                )
+                
+## Generate added messages and services with any dependencies listed here
+generate_messages(DEPENDENCIES std_msgs actionlib_msgs)
 
-#uncomment if you have defined messages
-rosbuild_genmsg()
-#uncomment if you have defined services
-rosbuild_gensrv()
+catkin_package()
